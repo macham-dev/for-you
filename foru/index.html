@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Do you want my gift?</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #ffe4e1;
+            font-family: 'Arial', sans-serif;
+            text-align: center;
+            overflow: hidden;
+        }
+
+        #container {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+
+        #gif-display {
+            width: 250px;
+            height: 250px;
+            margin-bottom: 20px;
+            object-fit: contain;
+        }
+
+        h1 {
+            color: #d63384;
+            margin-bottom: 30px;
+            transition: all 0.3s ease;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        button {
+            padding: 15px 30px;
+            font-size: 18px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+        }
+
+        #yesBtn {
+            background-color: #28a745;
+            color: white;
+        }
+
+        #noBtn {
+            background-color: #dc3545;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="container">
+        <img id="gif-display" src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExOHpueG56cnR4bmR4eXh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9cw/cLS1cfxvGOPVpf9g3y/giphy.gif" alt="GIF">
+        
+        <h1 id="question">Do you want my gift? 🎁</h1>
+
+        <div class="buttons">
+            <button id="yesBtn">Yes</button>
+            <button id="noBtn">No</button>
+        </div>
+    </div>
+
+    <script>
+        const yesBtn = document.getElementById('yesBtn');
+        const noBtn = document.getElementById('noBtn');
+        const questionText = document.getElementById('question');
+        const mainImage = document.getElementById('gif-display');
+
+        let clickCount = 0;
+
+        // List of texts for the "No" button sequence
+        const noTexts = [
+            "Are you sure?",
+            "You don't want it? 🥺",
+            "Try again...",
+            "You're so mean! 😭",
+            "Think about it again!",
+            "Maybe just click 'Yes'?",
+            "I'm gonna cry...",
+            "Please??"
+        ];
+
+        // List of sad GIFs for when she clicks No
+        const sadGifs = [
+            "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExNmtuYm9ueHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4ZCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9cw/9Y5BbDSkSTiY8/giphy.gif",
+
+        "https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExbnpmcDFxMTNyZWUwbGNtZnMxdWtnaXQ1ZnhqNjB6YXdzcmMxYzM2OSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/P53TSsopKicrm/giphy.gif",
+
+            "https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExbTM0YndlbDN1OHdyZ2Rtandodml4M2Jzd2gxMW40ZHFhOGY4eDJoeiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/zGuiJzgLAYyHnRVKmD/giphy.gif" ,
+
+            "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExMHFocm00eWpvYnF4Mm40MWdwNTF6bWgxNjBua24wdGcxZTdlaG0xbiZlcD12MV9naWZzX3NlYXJjaCZjdD1n/ySM2PakMSmw7u/giphy.gif" ,
+
+            "https://media.giphy.com/media/v1.Y2lkPWVjZjA1ZTQ3Y3J0YmRyMDk0ZDZ2NTI5czZqdGtxbWNxMXlycTRwcGxsdG5wb3BneCZlcD12MV9naWZzX3NlYXJjaCZjdD1n/d7rvF20PqNuGKSQGhf/giphy.gif" ,
+        ];
+
+        noBtn.addEventListener('click', () => {
+            // 1. Change Question Text
+            questionText.innerText = noTexts[clickCount % noTexts.length];
+
+            // 2. Change Image to Sad GIF
+            mainImage.src = sadGifs[clickCount % sadGifs.length];
+
+            // 3. Make Yes button bigger
+            let currentSize = parseFloat(window.getComputedStyle(yesBtn).fontSize);
+            yesBtn.style.fontSize = (currentSize * 1.4) + "px";
+            yesBtn.style.padding = (currentSize * 1.5) + "px " + (currentSize * 3) + "px";
+
+            // 4. Move No button to random position
+            const x = Math.random() * (window.innerWidth - noBtn.offsetWidth);
+            const y = Math.random() * (window.innerHeight - noBtn.offsetHeight);
+            
+            noBtn.style.position = 'absolute';
+            noBtn.style.left = x + 'px';
+            noBtn.style.top = y + 'px';
+
+            clickCount++;
+        });
+
+        yesBtn.addEventListener('click', () => {
+            // Final Screen
+            document.getElementById('container').innerHTML = `
+                <img id="gif-display" src= "https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExYWE5cnN6aWRkZGUzNG1nc2UwYjU5a2ltZjJvNWRzZXhieGdxZW01ZyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/t8xgPfC5oNIRMrNooe/giphy.gif" alt="Flower GIF">
+                <h1 style="color: #d63384;">Yay! You finally said yes! 🌹✨</h1>
+                <p>I knew you couldn't resist!</p>
+            `;
+        });
+    </script>
+</body>
+</html>
