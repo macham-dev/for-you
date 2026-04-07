@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>For You</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            overflow: hidden;
+            font-family: 'Arial', sans-serif;
+        }
+
+        /* Background Gradient matching your photo */
+        body {
+            background: linear-gradient(to bottom, #4a6fa5 0%, #92a8d1 40%, #f7cac9 70%, #f98d6a 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+        }
+
+        .grass {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: 60px;
+            background-color: #2d5a27;
+            z-index: 10;
+        }
+
+        .container {
+            margin-top: 50px;
+            text-align: center;
+            z-index: 20;
+        }
+
+        h1 {
+            color: white;
+            font-size: 2.5rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            margin: 0;
+            opacity: 0;
+            animation: fadeIn 2s forwards;
+        }
+
+        #clickBtn {
+            margin-top: 10px;
+            padding: 8px 20px;
+            font-size: 1rem;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 1px solid white;
+            border-radius: 20px;
+            cursor: pointer;
+            opacity: 0;
+            animation: fadeIn 2s forwards 3s;
+            transition: 0.3s;
+        }
+
+        #clickBtn:hover {
+            background: rgba(255, 255, 255, 0.4);
+        }
+
+        /* Rose Container */
+        .rose-wrapper {
+            position: absolute;
+            bottom: 60px; 
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transform-origin: bottom;
+            animation: growUp 3.5s ease-out forwards;
+        }
+
+        .flower-head {
+            line-height: 1;
+        }
+
+        .stem {
+            width: 4px;
+            background-color: #3e6b36;
+            height: 0;
+            transition: height 3.5s ease-out;
+        }
+
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+
+        @keyframes growUp {
+            0% { transform: scale(0); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>this for you cutie</h1>
+        <button id="clickBtn">(click for more)</button>
+    </div>
+
+    <div class="grass"></div>
+
+    <script>
+        const btn = document.getElementById('clickBtn');
+
+        // Initial rose
+        window.onload = () => {
+            setTimeout(() => spawnRose(window.innerWidth / 2 - 25), 1000);
+        };
+
+        btn.addEventListener('click', () => {
+            const randomX = Math.random() * (window.innerWidth - 80);
+            spawnRose(randomX);
+        });
+
+        function spawnRose(xPos) {
+            const wrapper = document.createElement('div');
+            wrapper.className = 'rose-wrapper';
+            wrapper.style.left = xPos + 'px';
+
+            const flower = document.createElement('div');
+            flower.className = 'flower-head';
+            flower.innerHTML = '🌹';
+
+            const stem = document.createElement('div');
+            stem.className = 'stem';
+
+            // --- MIXED SIZES LOGIC ---
+            // Randomly pick a size between 30px (small) and 80px (big)
+            const randomSize = Math.floor(Math.random() * (80 - 30 + 1)) + 30;
+            flower.style.fontSize = randomSize + 'px';
+            
+            // Adjust stem width based on flower size so it looks proportional
+            stem.style.width = (randomSize / 12) + 'px';
+
+            // Randomize stem height (between 100px and 300px)
+            const randomHeight = 100 + Math.random() * 200;
+            
+            wrapper.appendChild(flower);
+            wrapper.appendChild(stem);
+            document.body.appendChild(wrapper);
+
+            // Start the slow growth
+            setTimeout(() => {
+                stem.style.height = randomHeight + 'px';
+            }, 100);
+        }
+    </script>
+</body>
+</html>
