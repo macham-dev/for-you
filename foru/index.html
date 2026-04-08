@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>For You</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            overflow: hidden;
+            font-family: 'Arial', sans-serif;
+        }
+
+        /* Sunset Background */
+        body {
+            background: linear-gradient(to bottom, #4a6fa5 0%, #92a8d1 40%, #f7cac9 70%, #f98d6a 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+        }
+
+        .grass {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: 50px;
+            background-color: #2d5a27;
+            z-index: 100;
+        }
+
+        .container {
+            margin-top: 60px;
+            text-align: center;
+            z-index: 200;
+        }
+
+        h1 {
+            color: white;
+            font-size: 2.2rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+            opacity: 0;
+            animation: fadeIn 2s forwards;
+            font-weight: 300;
+        }
+
+        #clickBtn {
+            margin-top: 10px;
+            padding: 10px 22px;
+            font-size: 0.9rem;
+            background: rgba(255, 255, 255, 0.15);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            border-radius: 30px;
+            cursor: pointer;
+            opacity: 0;
+            animation: fadeIn 2s forwards 1.5s;
+            transition: 0.3s;
+            backdrop-filter: blur(5px);
+        }
+
+        .sunflower-wrapper {
+            position: absolute;
+            bottom: 50px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transform-origin: bottom;
+        }
+
+        .head-container {
+            position: relative;
+            width: 140px;
+            height: 140px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Step 3: Seeds */
+        .center-seeds {
+            position: absolute;
+            width: 65px;
+            height: 65px;
+            background: radial-gradient(circle, #2b160d 0%, #1a0a05 100%);
+            border-radius: 50%;
+            z-index: 10;
+            box-shadow: inset 0 0 15px rgba(0,0,0,1);
+            opacity: 0;
+            transform: scale(0);
+        }
+
+        /* Step 4: Pearls (Petals) */
+        .petals-layer {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            transform: scale(0);
+            z-index: 5;
+        }
+
+        .petal {
+            position: absolute;
+            top: 50%; left: 50%;
+            background: linear-gradient(135deg, #e68a00 0%, #c27a00 50%, #f4d03f 100%);
+            border-radius: 50% 50% 15% 15%;
+            transform-origin: center bottom;
+        }
+
+        .outer .petal { width: 34px; height: 72px; }
+        .inner .petal { width: 28px; height: 58px; filter: brightness(1.1); }
+
+        /* Step 1: Stem */
+        .stem {
+            width: 16px;
+            background: linear-gradient(to right, #2d5a27, #3e6b36, #2d5a27);
+            height: 0;
+            border-radius: 2px;
+            position: relative;
+            transition: height 1s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Step 2: Staggered Opposite Leaves */
+        .leaf {
+            position: absolute;
+            width: 85px;
+            height: 58px;
+            background: linear-gradient(135deg, #8bc34a 0%, #4f8a32 100%);
+            border-radius: 0 100% 0 100%;
+            opacity: 0;
+            transform: scale(0);
+            z-index: 1;
+        }
+
+        /* Left leaf: Higher up, curving left */
+        .leaf-left { 
+            left: -80px; 
+            top: 30%; 
+            transform: rotate(-10deg) scale(0);
+            transform-origin: right center; 
+        }
+
+        /* Right leaf: Lower down, curving right */
+        .leaf-right { 
+            right: -80px; 
+            top: 55%; 
+            /* scale(-1, 0) mirrors the shape to face right */
+            transform: rotate(-20deg) scale(-1, 0); 
+            transform-origin: left center; 
+        }
+
+        .floating-element {
+            position: absolute;
+            bottom: 60px;
+            pointer-events: none;
+            z-index: 150;
+            animation: floatAway 4s ease-in forwards;
+        }
+
+        @keyframes fadeIn { to { opacity: 1; } }
+        @keyframes growSeeds { to { opacity: 1; transform: scale(1); } }
+        
+        /* Growth animations to handle the staggered mirroring */
+        @keyframes growLeft { 
+            to { opacity: 1; transform: scale(1) rotate(-10deg); } 
+        }
+        @keyframes growRight { 
+            to { opacity: 1; transform: scale(-1, 1) rotate(-20deg); } 
+        }
+
+        @keyframes floatAway {
+            0% { transform: translateY(0) rotate(0deg); opacity: 0; }
+            10% { opacity: 1; }
+            100% { transform: translateY(-700px) rotate(120deg); opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>this for you cutie</h1>
+        <button id="clickBtn">(click for more)</button>
+    </div>
+
+    <div class="grass"></div>
+
+    <script>
+        const btn = document.getElementById('clickBtn');
+
+        window.onload = () => {
+            setTimeout(() => buildSunflower(window.innerWidth / 2 - 70), 800);
+        };
+
+        btn.addEventListener('click', () => {
+            const numFlowers = Math.floor(Math.random() * 2) + 1;
+            for (let i = 0; i < numFlowers; i++) {
+                setTimeout(() => {
+                    buildSunflower(Math.random() * (window.innerWidth - 180));
+                }, i * 500);
+            }
+            for (let i = 0; i < 5; i++) spawnFloatie();
+        });
+
+        function buildSunflower(xPos) {
+            const wrapper = document.createElement('div');
+            wrapper.className = 'sunflower-wrapper';
+            wrapper.style.left = xPos + 'px';
+            const scale = 0.8 + Math.random() * 0.4;
+            wrapper.style.transform = `scale(${scale})`;
+
+            const head = document.createElement('div');
+            head.className = 'head-container';
+
+            const outerLayer = document.createElement('div');
+            outerLayer.className = 'petals-layer outer';
+            const innerLayer = document.createElement('div');
+            innerLayer.className = 'petals-layer inner';
+
+            for (let i = 0; i < 10; i++) {
+                const pOuter = document.createElement('div');
+                pOuter.className = 'petal';
+                pOuter.style.transform = `translate(-50%, -100%) rotate(${i * 36}deg)`;
+                outerLayer.appendChild(pOuter);
+                const pInner = document.createElement('div');
+                pInner.className = 'petal';
+                pInner.style.transform = `translate(-50%, -100%) rotate(${(i * 36) + 18}deg)`;
+                innerLayer.appendChild(pInner);
+            }
+
+            const seeds = document.createElement('div');
+            seeds.className = 'center-seeds';
+
+            const stem = document.createElement('div');
+            stem.className = 'stem';
+            
+            // Step 2: Create leaves
+            const leafL = document.createElement('div');
+            leafL.className = 'leaf leaf-left';
+            const leafR = document.createElement('div');
+            leafR.className = 'leaf leaf-right';
+            
+            stem.appendChild(leafL);
+            stem.appendChild(leafR);
+            
+            head.appendChild(outerLayer);
+            head.appendChild(innerLayer);
+            head.appendChild(seeds);
+            wrapper.appendChild(head);
+            wrapper.appendChild(stem);
+            document.body.appendChild(wrapper);
+
+            const randomHeight = 140 + Math.random() * 80;
+
+            // --- 4-STEP SEQUENCE ---
+
+            // 1. Stem
+            setTimeout(() => { stem.style.height = randomHeight + 'px'; }, 100);
+
+            // 2. Staggered Leaves (Left then Right)
+            setTimeout(() => {
+                leafL.style.animation = 'growLeft 0.8s ease-out forwards';
+                leafR.style.animation = 'growRight 0.8s ease-out forwards 0.2s';
+            }, 1100);
+
+            // 3. Seeds
+            setTimeout(() => {
+                seeds.style.animation = 'growSeeds 0.7s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards';
+            }, 2000);
+
+            // 4. Pearls (Petals)
+            setTimeout(() => {
+                outerLayer.style.animation = 'growSeeds 1s ease-out forwards';
+                innerLayer.style.animation = 'growSeeds 1.2s ease-out 0.2s forwards';
+            }, 2800);
+        }
+
+        function spawnFloatie() {
+            const floatie = document.createElement('div');
+            floatie.className = 'floating-element';
+            const symbols = ['🦋', '❤️'];
+            floatie.innerHTML = symbols[Math.floor(Math.random() * 2)];
+            floatie.style.fontSize = (18 + Math.random() * 10) + 'px';
+            floatie.style.left = Math.random() * window.innerWidth + 'px';
+            document.body.appendChild(floatie);
+            setTimeout(() => { floatie.remove(); }, 5000);
+        }
+    </script>
+</body>
+</html>
